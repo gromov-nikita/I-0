@@ -18,15 +18,24 @@ line as a String and place that String object into a LinkedList. Print all of th
 LinkedList in reverse order.
 */
 public class Runner {
-    public static LinkedList<String> reader(String path) throws IOException {
-        File file = new File(path);
+    public static LinkedList<String> reader(String[] args) throws IOException {
+        File file = new File(args[0]);
         FileReader fileR = null;
         try{
             LinkedList<String> list = new LinkedList<>();
             fileR = new FileReader(file);
+            String str;
+            int n = 1;
             BufferedReader fileBR = new BufferedReader(fileR);
             while(fileBR.ready()) {
-                list.add(fileBR.readLine());
+                str = fileBR.readLine();
+                for(int i = 1; i < args.length; i++) {
+                    if(str.equals(args[i])) {
+                        list.add(n + ") " + str);
+                        break;
+                    }
+                }
+                n++;
             }
             return list;
         }
@@ -39,13 +48,13 @@ public class Runner {
     }
     public static void main(String[] args) throws IOException {
         try {
-            LinkedList<String> list = reader(args[0]);
+            LinkedList<String> list = reader(args);
             ListIterator<String> it = list.listIterator(list.size());
             while (it.hasPrevious()) {
                 System.out.println(it.previous());
             }
         } catch (Exception e) {
-            System.out.println("Exception: Enter file name");
+            System.err.println("Exception: Enter file name");
         }
 
 
