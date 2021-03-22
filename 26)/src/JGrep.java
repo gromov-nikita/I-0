@@ -8,12 +8,12 @@ public class JGrep {
             System.out.println("Usage: java JGrep file regex");
             System.exit(0);
         }
-        Pattern p = Pattern.compile("\\.$");
+        Pattern p = Pattern.compile(args[1]);
         // Iterate through the lines of the input file:
         int index = 0;
         Matcher m = p.matcher("");
         Path path = null;
-        path = Paths.get("src\\readme.txt");
+        path = Paths.get(args[0]);
         for(String line : Files.readAllLines(path)) {
             m.reset(line);
             while(m.find())

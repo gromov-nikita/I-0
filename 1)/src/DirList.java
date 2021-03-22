@@ -12,7 +12,7 @@ public class DirList {
            }
         }
         else {
-            //Я тут просто писал регулярное выражение нужное "^\\D+.java"
+            //"^\\D+.java"
             DirFilter dir = new DirFilter(args[0]);
             for(File f : files) {
                 if(dir.accept(file,f.getName())) {

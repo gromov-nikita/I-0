@@ -4,11 +4,12 @@ directory subtree that have been modified after a particular date.
  */
 
 import java.io.File;
+import java.util.Date;
 
 public class Runner {
     public static void main(String[] args) {
-        File file = new File("\\test");
-        System.out.println(file.getAbsolutePath());
+        Date obj = new Date();
 
+        System.out.println(obj.toString());
     }
 }
