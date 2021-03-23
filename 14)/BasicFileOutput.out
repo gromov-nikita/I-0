@@ -1,0 +1,20 @@
+1: import java.io.*;
+2: public class BasicFileOutput {
+3:     static String file = "BasicFileOutput.out";
+4:     public static void main(String[] args)
+5:             throws IOException {
+6:         BufferedReader in = new BufferedReader(
+7:                 new StringReader(
+8:                         BufferedInputFile.read("src\\BasicFileOutput.java")));
+9:         PrintWriter out = new PrintWriter(
+10:                 new BufferedWriter(new FileWriter(file)));
+11:         int lineCount = 1;
+12:         String s;
+13: 
+14:         while((s = in.readLine()) != null )
+15:             out.println(lineCount++ + ": " + s);
+16:         out.close();
+17:         // Show the stored file:
+18:         System.out.println(BufferedInputFile.read(file));
+19:     }
+20: }
