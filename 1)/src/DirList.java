@@ -28,7 +28,7 @@ public class DirList {
         File path = new File(".");
         List<String> list = new LinkedList<String>();
         filesFind(args,path,list);
-        //Для проверки сортировки я создал папки  ".idea" (z) и в "1)" (1 a aa ab)
+        //Для проверки сортировки я создал папки в ".idea" (z) и в "1)" (1 a aa ab)
         Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
         for(String s : list) {
             System.out.println(s);
