@@ -1,47 +1,76 @@
-1: import java.io.*;
-2: import java.util.ArrayList;
-3: import java.util.Date;
-4: import java.util.LinkedList;
-5: import java.util.List;
-6: 
-7: public class BasicFileOutput {
-8:     static String file = "src\\writemeBuffered.txt";
-9:     public static void main(String[] args) throws IOException {
-10:         BufferedReader in = new BufferedReader(new StringReader(BufferedInputFile.read("src\\BasicFileOutput.java")));
-11:         PrintWriter out1 = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-12:         int lineCount = 1;
-13:         String s;
-14:         while((s = in.readLine()) != null )
-15:             out1.println(lineCount++ + ": " + s);
-16:         long timeAfter;
-17:         int timeBuffered;
-18:         long timeBefore = System.nanoTime();
-19:         out1.println(BufferedInputFile.read(file));
-20:         timeAfter = System.nanoTime();
-21:         timeBuffered = (int)(timeAfter - timeBefore);
-22:         out1.close();
-23:         FileWriter out2 = new FileWriter("src\\writeme.txt");
-24:         FileReader in2 = new FileReader("src\\BasicFileOutput.java");
-25:         List<Character> list = new ArrayList<Character>();
-26:         int save = in2.read();
-27:         while(save != -1) {
-28:             list.add((char)save);
-29:             save = in2.read();
-30:         }
-31:         timeBefore = System.nanoTime();
-32:         for(char c : list) {
-33:             out2.write(c);
-34:         }
-35:         timeAfter = System.nanoTime();
-36:         int time = (int)(timeAfter - timeBefore);
-37:         System.out.println("timeBuffered: " + timeBuffered);
-38:         System.out.println("time: " + time);
-39:         System.out.println("timeBuffer - time = " + (timeBuffered - time));
-40:         in2.close();
-41:         out2.close();
-42:         System.nanoTime();
-43:         // Show the stored file:
-44:         //System.out.println(BufferedInputFile.read(file));
-45:     }
-46: }
+import java.io.*;
+import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
+public class BasicFileOutput {
+    public static void copyFBuff(String inPath, String outPath) throws IOException {
+        BufferedReader in = null;
+        PrintWriter out = null;
+        try {
+            in = new BufferedReader(new StringReader(BufferedInputFile.read(inPath)));
+            out = new PrintWriter(new BufferedWriter(new FileWriter(outPath)));
+            String s;
+            while ((s = in.readLine()) != null)
+                out.println(s);
+        }
+        finally {
+            in.close();
+            out.close();
+        }
+    }
+    public static void copyF(String inPath, String outPath) throws IOException {
+        BasicFileOutput.writeF(outPath,BasicFileOutput.readF(inPath));
+    }
+    public static List readF(String inPath) throws IOException {
+        FileReader in = null;
+        List<Character> list = new ArrayList<Character>();
+        try {
+            in = new FileReader(inPath);
+            int save = in.read();
+            while (save != -1) {
+                list.add((char) save);
+                save = in.read();
+            }
+        }
+        catch(Exception ex) {
+            System.err.println("BasicFileOutput.readF()");
+        }
+        finally {
+            in.close();
+        }
+        return list;
+    }
+    public static void writeF(String outPath, List<Character> list) throws IOException {
+        FileWriter out = null;
+        try {
+            out = new FileWriter(outPath);
+            for (char c : list) {
+                out.write(c);
+            }
+        }
+        catch (Exception ex) {
+            System.err.println("BasicFileOutput.writeF()");
+        }
+        finally {
+            out.close();
+        }
+    }
+    public static void main(String[] args) throws IOException {
+        long timeAfter;
+        int timeBuffered;
+        long timeBefore = System.nanoTime();
+        BasicFileOutput.copyFBuff("src\\BasicFileOutput.java", "src\\writemeBuffered.txt");
+        timeAfter = System.nanoTime();
+        timeBuffered = (int)(timeAfter - timeBefore);
+        timeBefore = System.nanoTime();
+        BasicFileOutput.copyF("src\\BasicFileOutput.java", "src\\writeme.txt");
+        timeAfter = System.nanoTime();
+        int time = (int)(timeAfter - timeBefore);
+        System.out.println("timeBuffered: " + timeBuffered);
+        System.out.println("time: " + time);
+        System.out.println("timeBuffer - time = " + (timeBuffered - time));
+    }
+}
