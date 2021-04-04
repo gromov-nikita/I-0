@@ -1,5 +1,13 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+/*
+Exercise 26: (3) Modify strings/JGrep.java to use Java nio memorymapped files.
+*/
 public class TextFile extends ArrayList<String> {
     // Read a file as a single string:
     public static String read(String fileName) {
@@ -60,16 +68,21 @@ public class TextFile extends ArrayList<String> {
             throw new RuntimeException(e);
         }
     }
-    // Simple test:
-    public static void main(String[] args) {
-        String file = read("TextFile.java");
-        write("test.txt", file);
-        TextFile text = new TextFile("test.txt");
-        text.write("test2.txt");
-        // Break into unique sorted list of words:
-        TreeSet<String> words = new TreeSet<String>(
-                new TextFile("TextFile.java", "\\W+"));
-        // Display the capitalized words:
-        System.out.println(words.headSet("a"));
+    public static void main(String[] args) throws IOException {
+        if(args.length > 2) {
+            System.out.println("Usage: java JGrep file regex");
+            System.exit(0);
+        }
+        Pattern p = Pattern.compile(args[1]);
+        // Iterate through the lines of the input file:
+        int index = 0;
+        Matcher m = p.matcher("");
+        Path path = Paths.get(args[0]);
+        for (String line : Files.readAllLines(path)) {
+            m.reset(line);
+            while (m.find())
+                System.out.println(index++ + ": " +
+                        m.group() + ": " + m.start());
+        }
     }
 }
